@@ -5,6 +5,9 @@ import productReducer from '../features/product/slices/productsSlice'
 import cataloguesReducer from '../features/catalogue/slices/cataloguesSlice'
 import fetchCatalogueReducer from '../features/catalogue/slices/fetchCatalogueSlice'
 import fetchProductReducer from '../features/product/slices/fetchProductSlice'
+import addProductReducer from '../features/product/slices/addProductSlice'
+import deleteProductReducer from '../features/product/slices/deleteProductSlice'
+import addCatalogueReducer from '../features/catalogue/slices/addCatalogueSlice'
 
 export function makeStore() {
   return configureStore({
@@ -12,8 +15,11 @@ export function makeStore() {
       counter: counterReducer,
       products: productReducer,
       product: fetchProductReducer,
+      addProduct: addProductReducer,
+      deleteProduct: deleteProductReducer,
       catalogues: cataloguesReducer,
       catalogue: fetchCatalogueReducer,
+      addCatalogue: addCatalogueReducer,
     },
   })
 }

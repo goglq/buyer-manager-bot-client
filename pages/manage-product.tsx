@@ -10,7 +10,7 @@ const manageCataloguePage: NextPage = () => {
 
   useEffect(() => {
     dispatch(fetchAsync())
-  }, [products])
+  }, [])
 
   return (
     <div className="grid grid-cols-4 gap-4 p-5 h-rel-screen">

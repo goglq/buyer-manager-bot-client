@@ -1,18 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { fetchCatalogue } from '../catalogueAPI'
+import { fetchCatalogue, fetchProductsInCatalogue } from '../catalogueAPI'
 import { CatalogueDto } from '../catalogueDtos'
 import { ThunkStatus } from '../../ThunkStatus'
+import { ProductDto } from '../../product/productDtos'
 
 export interface CatalogueState {
   catalogue?: CatalogueDto
   status: ThunkStatus
   error?: string
+  products: ProductDto[]
 }
 
 const initialState: CatalogueState = {
   catalogue: undefined,
   status: ThunkStatus.Idle,
+  products: [],
 }
 
 export const fetchOneAsync = createAsyncThunk(
@@ -23,8 +26,17 @@ export const fetchOneAsync = createAsyncThunk(
   }
 )
 
+export const fetchProductsAsync = createAsyncThunk(
+  'catalogue/fetchProducts',
+  async (id: string) => {
+    const response = await fetchProductsInCatalogue(id)
+    // The value we return becomes the `fulfilled` action payload
+    return response
+  }
+)
+
 export const catalogueSlice = createSlice({
-  name: 'catalogue',
+  name: 'fetchCatalogue',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
@@ -46,6 +58,18 @@ export const catalogueSlice = createSlice({
         state.error = undefined
       })
       .addCase(fetchOneAsync.rejected, (state, action) => {
+        state.status = ThunkStatus.Failed
+        state.error = action.error.message
+      })
+      .addCase(fetchProductsAsync.pending, (state) => {
+        state.status = ThunkStatus.Loading
+      })
+      .addCase(fetchProductsAsync.fulfilled, (state, action) => {
+        state.status = ThunkStatus.Success
+        state.products = action.payload
+        state.error = undefined
+      })
+      .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = ThunkStatus.Failed
         state.error = action.error.message
       })
