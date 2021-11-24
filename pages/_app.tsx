@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
 
   const defaultClass =
-    'px-10 py-3 text-lg font-medium transition-all duration-500 ease-in-out'
+    'rounded-full px-5 py-1 text-lg font-medium transition-all duration-500 ease-in-out hover:bg-gray-200'
   const activeClass =
     'rounded-full px-10 py-2 text-lg font-medium text-white bg-black transition-all duration-500 ease-in-out'
 

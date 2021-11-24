@@ -104,7 +104,7 @@ const CreateCataloguePage = () => {
           ))}
         </div>
         <button
-          className="py-2 rounded-md bg-green-500 text-lg text-white font-medium"
+          className="py-2 rounded-md bg-green-400 text-lg text-white font-medium hover:bg-green-500 transition-colors duration-200 ease-in-out"
           onClick={onCreateButtonClick}
         >
           Создать

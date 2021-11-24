@@ -1,6 +1,5 @@
 import { useRouter } from 'next/dist/client/router'
 import Link from 'next/link'
-import Image from 'next/image'
 import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import LoadingComponent from '../../components/loading'
@@ -107,12 +106,12 @@ const ProductPage = () => {
         <h1 className="text-xl font-medium">Управление товаром</h1>
         <div className="flex flex-col space-y-5">
           <Link href={`/product/edit/${id}`}>
-            <a className="flex justify-center items-center px-5 py-2 rounded-md bg-blue-400 text-white font-bold">
+            <a className="flex justify-center items-center px-5 py-2 rounded-md bg-blue-400 text-white font-bold hover:bg-blue-500 transition-colors duration-200 ease-in-out">
               Изменить
             </a>
           </Link>
           <button
-            className="px-5 py-2 rounded-md bg-red-500 text-white font-bold"
+            className="px-5 py-2 rounded-md bg-red-500 text-white font-bold hover:bg-red-600 transition-colors duration-200 ease-in-out"
             onClick={onDeleteButtonClick}
           >
             Удалить
