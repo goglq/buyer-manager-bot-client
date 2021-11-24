@@ -43,16 +43,24 @@ const ManageProductPage: NextPage = () => {
         <h1 className="text-2xl font-medium">Управление каталогами</h1>
         <div className="flex flex-col space-y-3">
           <Link href="/catalogue/create-catalogue">
-            <a className="flex justify-center items-center px-5 py-2 rounded-md bg-green-400 text-white font-bold">
+            <a className="flex justify-center items-center px-5 py-2 rounded-md bg-green-400 text-white font-bold hover:bg-green-500 transition-colors duration-200 ease-in-out">
               Добавить
             </a>
           </Link>
-          <button className="px-5 py-2 rounded-md bg-blue-400 text-white font-bold">
-            Изменить
-          </button>
-          <button className="px-5 py-2 rounded-md bg-red-500 text-white font-bold">
-            Удалить
-          </button>
+          <div className="flex flex-col space-y-3">
+            <div className="bg-blue-100 px-5 py-2 rounded-md">
+              <p>
+                Чтобы изменить каталог нажмите на него и затем нажмите на кнопку
+                изменить
+              </p>
+            </div>
+            <div className="bg-red-100 px-5 py-2 rounded-md">
+              <p>
+                Для удаления каталога нажмите на него и затем нажмите на кнопку
+                удалить
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

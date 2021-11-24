@@ -231,7 +231,7 @@ const EditProductPage = (props: Props) => {
         )}
       </div>
       <button
-        className="col-span-3 rounded-lg bg-blue-500 text-2xl text-white font-medium"
+        className="col-span-3 rounded-lg bg-blue-400 text-2xl text-white font-medium hover:bg-blue-500 transition-colors duration-200 ease-in-out"
         onClick={onEditButtonClick}
       >
         Изменить

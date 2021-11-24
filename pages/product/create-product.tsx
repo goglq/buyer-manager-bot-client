@@ -188,7 +188,7 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
             />
           ))}
           <button
-            className="rounded-md bg-blue-400 py-2 text-white font-medium"
+            className="rounded-md bg-blue-400 py-2 text-white font-medium hover:bg-blue-500 transition-colors duration-200 ease-in-out"
             onClick={onAddClick}
           >
             Добавить картнику
@@ -209,7 +209,7 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
           )}
         </div>
         <button
-          className="col-span-3 rounded-lg bg-green-500 text-2xl text-white font-medium"
+          className="col-span-3 rounded-lg bg-green-400 text-2xl text-white font-medium hover:bg-green-500 transition-colors duration-200 ease-in-out"
           onClick={onCreateButtonClick}
         >
           Создать

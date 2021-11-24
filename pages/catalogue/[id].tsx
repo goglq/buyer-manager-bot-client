@@ -99,7 +99,7 @@ const CataloguePage = () => {
             }}
           >
             <a
-              className="flex justify-center item-center px-5 py-2 rounded-md bg-green-400 text-white font-bold"
+              className="flex justify-center item-center px-5 py-2 rounded-md bg-green-400 text-white font-bold hover:bg-green-500 transition-colors duration-200 ease-in-out"
               onClick={onChangeClick}
             >
               Добавить продукт
@@ -107,13 +107,13 @@ const CataloguePage = () => {
           </Link>
 
           <button
-            className="px-5 py-2 rounded-md bg-blue-400 text-white font-bold"
+            className="px-5 py-2 rounded-md bg-blue-400 text-white font-bold hover:bg-blue-500 transition-colors duration-200 ease-in-out"
             onClick={onChangeClick}
           >
             Изменить
           </button>
           <button
-            className="px-5 py-2 rounded-md bg-red-500 text-white font-bold"
+            className="px-5 py-2 rounded-md bg-red-500 text-white font-bold hover:bg-red-600 transition-colors duration-200 ease-in-out"
             onClick={onDeleteClick}
           >
             Удалить
