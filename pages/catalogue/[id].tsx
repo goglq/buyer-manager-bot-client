@@ -13,7 +13,7 @@ import {
 } from '../../features/product/productsSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
-const cataloguePage = () => {
+const CataloguePage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const catalogue = useAppSelector((state) => state.catalogue.catalogue)
@@ -23,21 +23,21 @@ const cataloguePage = () => {
   const productStatus = useAppSelector((state) => state.product.status)
 
   useEffect(() => {
-    dispatch(fetchCatalogueAsync(router.query.id as string))
-    dispatch(fetchProductsAsync(router.query.id as string))
-  }, [id])
+    dispatch(fetchCatalogueAsync(id as string))
+    dispatch(fetchProductsAsync(id as string))
+  }, [id, dispatch])
 
   useEffect(() => {
     if (catalogueStatus === ThunkStatus.Success) {
       dispatch(clearCatalogueFlag())
     }
-  }, [catalogueStatus, catalogue])
+  }, [catalogueStatus, catalogue, dispatch])
 
   useEffect(() => {
     if (productStatus === ThunkStatus.Success) {
       dispatch(clearProductFlag())
     }
-  }, [productStatus, products])
+  }, [productStatus, products, dispatch])
 
   const onChangeClick = () => {}
 
@@ -64,6 +64,7 @@ const cataloguePage = () => {
               target="_blank"
               className="p-2 rounded-md bg-gray-100 text-blue-600 text-lg"
               href={`https://t.me/${catalogue?.url}`}
+              rel="noopener noreferrer"
             >
               @{catalogue?.url}
             </a>
@@ -123,4 +124,4 @@ const cataloguePage = () => {
   )
 }
 
-export default cataloguePage
+export default CataloguePage

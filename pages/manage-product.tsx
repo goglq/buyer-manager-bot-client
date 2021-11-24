@@ -8,20 +8,20 @@ import {
 } from '../features/product/productsSlice'
 import { ThunkStatus } from '../features/ThunkStatus'
 
-const manageCataloguePage: NextPage = () => {
+const ManageCataloguePage: NextPage = () => {
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
   const status = useAppSelector((state) => state.product.status)
 
   useEffect(() => {
     dispatch(fetchProductsAsync())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (status === ThunkStatus.Success) {
       dispatch(clearProductFlag())
     }
-  }, [status, products])
+  }, [status, products, dispatch])
 
   return (
     <div className="grid grid-cols-4 gap-4 p-5 h-rel-screen">
@@ -59,4 +59,4 @@ const manageCataloguePage: NextPage = () => {
   )
 }
 
-export default manageCataloguePage
+export default ManageCataloguePage

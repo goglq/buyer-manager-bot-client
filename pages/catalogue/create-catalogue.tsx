@@ -7,11 +7,11 @@ import {
 } from '../../features/catalogue/catalogueSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
-const createCataloguePage = () => {
+const CreateCataloguePage = () => {
   const dispatch = useAppDispatch()
   const status = useAppSelector((state) => state.catalogue.status)
 
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<{ id: number; error: string }[]>([])
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
 
@@ -20,7 +20,7 @@ const createCataloguePage = () => {
       router.push('/manage-catalogue')
       dispatch(clearCatalogueFlag())
     }
-  }, [status])
+  }, [status, dispatch])
 
   const onCreateButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -33,7 +33,15 @@ const createCataloguePage = () => {
       tmpErrors.push('Введите адрес канала/каталога')
     }
 
-    setErrors(tmpErrors)
+    setErrors(
+      tmpErrors.map((tmpError) => {
+        let i = 0
+        return {
+          id: i++,
+          error: tmpError,
+        }
+      })
+    )
 
     if (tmpErrors.length > 0) {
       return
@@ -53,6 +61,7 @@ const createCataloguePage = () => {
               target="_blank"
               className="px-2 rounded-full bg-gray-200 text-black"
               href="https://t.me/buyermanager_bot"
+              rel="noopener noreferrer"
             >
               @buyermanager_bot
             </a>{' '}
@@ -86,8 +95,11 @@ const createCataloguePage = () => {
         </div>
         <div className="flex flex-col mt-2">
           {errors.map((error) => (
-            <span className="px-1 py-1 rounded-md bg-red-500 text-white text-center font-medium mb-1 mr-1">
-              {error}
+            <span
+              key={error.id}
+              className="px-1 py-1 rounded-md bg-red-500 text-white text-center font-medium mb-1 mr-1"
+            >
+              {error.error}
             </span>
           ))}
         </div>
@@ -102,4 +114,4 @@ const createCataloguePage = () => {
   )
 }
 
-export default createCataloguePage
+export default CreateCataloguePage

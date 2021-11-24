@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const characterCounterPage = () => {
+const CharacterCounterPage = () => {
   let i = 0
 
   const [counter, setCounter] = useState(0)
@@ -82,4 +82,4 @@ const characterCounterPage = () => {
   )
 }
 
-export default characterCounterPage
+export default CharacterCounterPage

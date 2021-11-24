@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import Image from 'next/image'
 import { useRouter } from 'next/dist/client/router'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
@@ -16,7 +17,7 @@ interface Props {
   preCatalogueId: number
 }
 
-const createProductPage = ({ preCatalogueId }: Props) => {
+const CreateProductPage = ({ preCatalogueId }: Props) => {
   const router = useRouter()
   const dispatch = useAppDispatch()
 
@@ -26,7 +27,7 @@ const createProductPage = ({ preCatalogueId }: Props) => {
   const productStatus = useAppSelector((state) => state.product.status)
   const catalogueStatus = useAppSelector((state) => state.catalogue.status)
 
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<{ id: number; error: string }[]>([])
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [catalogueId, setCatalogueId] = useState<number>(preCatalogueId)
@@ -38,38 +39,46 @@ const createProductPage = ({ preCatalogueId }: Props) => {
 
   useEffect(() => {
     dispatch(fetchCataloguesAsync())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (catalogueStatus === ThunkStatus.Success) {
       dispatch(clearCatalogueFlag())
     }
-  }, [catalogueStatus, catalogues])
+  }, [catalogueStatus, catalogues, dispatch])
 
   useEffect(() => {
     if (productStatus === ThunkStatus.Success) {
       dispatch(clearProductFlag())
       router.push('/manage-product')
     }
-  }, [productStatus, product])
+  }, [productStatus, product, dispatch, router])
 
   const onCreateButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setErrors([])
-    const tmp_errors = []
+    const tmpErrors = []
     if (name.length <= 0) {
-      tmp_errors.push('Название товара не указано!')
+      tmpErrors.push('Название товара не указано!')
     }
     if (pictureUrls.length <= 0) {
-      tmp_errors.push('У товара должна быть хотя бы одна картинка!')
+      tmpErrors.push('У товара должна быть хотя бы одна картинка!')
     }
     if (catalogueId === -1) {
-      tmp_errors.push('Выберите каталог, где будет размещен товар!')
+      tmpErrors.push('Выберите каталог, где будет размещен товар!')
     }
 
-    setErrors(tmp_errors)
+    setErrors(
+      tmpErrors.map((tmpError) => {
+        let i = 0
+        return {
+          id: i++,
+          error: tmpError,
+        }
+      })
+    )
 
-    if (tmp_errors.length > 0) {
+    if (tmpErrors.length > 0) {
       return
     }
 
@@ -107,7 +116,10 @@ const createProductPage = ({ preCatalogueId }: Props) => {
               </label>
               <div className="flex flex-wrap">
                 {errors.map((error) => (
-                  <div className="px-3 py-2 rounded-md bg-red-500 text-white font-medium mb-1 mr-1">
+                  <div
+                    key={error.id}
+                    className="px-3 py-2 rounded-md bg-red-500 text-white font-medium mb-1 mr-1"
+                  >
                     {error}
                   </div>
                 ))}
@@ -189,7 +201,7 @@ const createProductPage = ({ preCatalogueId }: Props) => {
           </label>
           {pictureUrls.map((pictureUrl) =>
             pictureUrl.url.length > 0 ? (
-              <img key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
+              <Image key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
             ) : (
               <span key={pictureUrl.id} className="self-center text-bold">
                 . . .
@@ -228,4 +240,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default createProductPage
+export default CreateProductPage

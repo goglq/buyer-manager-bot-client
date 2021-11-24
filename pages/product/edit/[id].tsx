@@ -1,4 +1,5 @@
 import { useRouter } from 'next/dist/client/router'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import {
@@ -16,7 +17,7 @@ interface Props {
   id: string
 }
 
-const editProductPage = (props: Props) => {
+const EditProductPage = (props: Props) => {
   const router = useRouter()
 
   const dispatch = useAppDispatch()
@@ -27,7 +28,7 @@ const editProductPage = (props: Props) => {
   const catalogueStatus = useAppSelector((state) => state.catalogue.status)
   const productStatus = useAppSelector((state) => state.product.status)
 
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<{ id: number; error: string }[]>([])
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [catalogueId, setCatalogueId] = useState<number>(-1)
@@ -42,13 +43,13 @@ const editProductPage = (props: Props) => {
   useEffect(() => {
     dispatch(fetchCataloguesAsync())
     dispatch(fetchProductAsync({ id: id, includePictures: true }))
-  }, [id])
+  }, [id, dispatch])
 
   useEffect(() => {
     if (catalogueStatus === ThunkStatus.Success) {
       dispatch(clearCatalogueFlag())
     }
-  }, [catalogueStatus, catalogues])
+  }, [catalogueStatus, catalogues, dispatch])
 
   useEffect(() => {
     if (productStatus === ThunkStatus.Success) {
@@ -62,7 +63,7 @@ const editProductPage = (props: Props) => {
       )
       dispatch(clearProductFlag())
     }
-  }, [productStatus, product])
+  }, [productStatus, product, dispatch])
 
   useEffect(() => {
     if (productStatus === ThunkStatus.Success) {
@@ -96,7 +97,16 @@ const editProductPage = (props: Props) => {
     if (pictureUrls.length < 1) {
       tmpErrors.push('Введите хотя бы 1 адрес картинки')
     }
-    setErrors(tmpErrors)
+    setErrors(
+      tmpErrors.map((tmpError) => {
+        let i = 0
+        return {
+          id: i++,
+          error: tmpError,
+        }
+      })
+    )
+
     if (tmpErrors.length > 0) {
       return
     }
@@ -126,7 +136,10 @@ const editProductPage = (props: Props) => {
             </label>
             <div className="flex flex-wrap">
               {errors.map((error) => (
-                <div className="px-3 py-2 rounded-md bg-red-500 text-white font-medium mb-1 mr-1">
+                <div
+                  key={error.id}
+                  className="px-3 py-2 rounded-md bg-red-500 text-white font-medium mb-1 mr-1"
+                >
                   {error}
                 </div>
               ))}
@@ -210,7 +223,7 @@ const editProductPage = (props: Props) => {
         </label>
         {pictureUrls.map((pictureUrl) =>
           pictureUrl.url.length > 0 ? (
-            <img key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
+            <Image key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
           ) : (
             <span key={pictureUrl.id} className="self-center text-bold">
               . . .
@@ -230,4 +243,4 @@ const editProductPage = (props: Props) => {
     </form>
   )
 }
-export default editProductPage
+export default EditProductPage

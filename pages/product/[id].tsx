@@ -1,5 +1,6 @@
 import { useRouter } from 'next/dist/client/router'
 import Link from 'next/link'
+import Image from 'next/image'
 import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import LoadingComponent from '../../components/loading'
@@ -10,7 +11,7 @@ import {
 import { fetchProductAsync } from '../../features/product/productsSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
-const productPage = () => {
+const ProductPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
 
@@ -24,24 +25,24 @@ const productPage = () => {
   useEffect(() => {
     dispatch(
       fetchProductAsync({
-        id: router.query.id as string,
+        id: id as string,
         includePictures: true,
       })
     )
-  }, [])
+  }, [id, dispatch])
 
   useEffect(() => {
     if (status === ThunkStatus.Success) {
       dispatch(clearProductFlag())
     }
-  }, [product, status])
+  }, [product, status, dispatch])
 
   useEffect(() => {
     if (deleteStatus === ThunkStatus.Success) {
       router.back()
       dispatch(clearProductFlag())
     }
-  }, [product, deleteStatus])
+  }, [product, deleteStatus, dispatch, router])
 
   const onDeleteButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -93,7 +94,7 @@ const productPage = () => {
         <h1 className="text-xl font-medium">Картинки</h1>
         <div className="flex flex-col space-y-4 ">
           {product?.pictureLinks.map((link) => (
-            <img
+            <Image
               key={link.id}
               className="rounded-md w-full"
               src={link.url}
@@ -122,4 +123,4 @@ const productPage = () => {
   )
 }
 
-export default productPage
+export default ProductPage
