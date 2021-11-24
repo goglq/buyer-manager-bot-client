@@ -1,5 +1,4 @@
 import { useRouter } from 'next/dist/client/router'
-import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import {
@@ -223,7 +222,7 @@ const EditProductPage = (props: Props) => {
         </label>
         {pictureUrls.map((pictureUrl) =>
           pictureUrl.url.length > 0 ? (
-            <Image key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
+            <img key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
           ) : (
             <span key={pictureUrl.id} className="self-center text-bold">
               . . .

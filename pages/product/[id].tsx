@@ -94,7 +94,7 @@ const ProductPage = () => {
         <h1 className="text-xl font-medium">Картинки</h1>
         <div className="flex flex-col space-y-4 ">
           {product?.pictureLinks.map((link) => (
-            <Image
+            <img
               key={link.id}
               className="rounded-md w-full"
               src={link.url}
