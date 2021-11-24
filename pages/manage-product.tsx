@@ -2,6 +2,7 @@ import { NextPage } from 'next'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
+import LoadingComponent from '../components/loading'
 import {
   clearProductFlag,
   fetchProductsAsync,
@@ -23,7 +24,11 @@ const ManageCataloguePage: NextPage = () => {
     }
   }, [status, products, dispatch])
 
-  return (
+  return status === ThunkStatus.Loading ? (
+    <div className="flex justify-center items-center h-rel-screen">
+      <LoadingComponent />
+    </div>
+  ) : (
     <div className="grid grid-cols-4 gap-4 p-5 h-rel-screen">
       <div className="col-span-3 rounded-lg bg-white px-6 py-4 space-y-8">
         <h1 className="text-2xl font-medium">Список товаров</h1>
