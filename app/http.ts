@@ -3,7 +3,7 @@ import axios from 'axios'
 export const API_URL = process.env.API_URL
 
 const $api = axios.create({
-  withCredentials: false,
+  withCredentials: true,
   baseURL: API_URL,
 })
 

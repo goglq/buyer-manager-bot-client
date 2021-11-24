@@ -3,10 +3,13 @@ import { useRouter } from 'next/dist/client/router'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
-  clearData,
-  createAsync,
+  clearCatalogueFlag,
   fetchCataloguesAsync,
-} from '../../features/product/slices/addProductSlice'
+} from '../../features/catalogue/catalogueSlice'
+import {
+  clearProductFlag,
+  createProductAsync,
+} from '../../features/product/productsSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
 interface Props {
@@ -16,8 +19,12 @@ interface Props {
 const createProductPage = ({ preCatalogueId }: Props) => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const catalogues = useAppSelector((state) => state.addProduct.catalogues)
-  const status = useAppSelector((state) => state.addProduct.status)
+
+  const product = useAppSelector((state) => state.product.product)
+  const catalogues = useAppSelector((state) => state.catalogue.catalogues)
+
+  const productStatus = useAppSelector((state) => state.product.status)
+  const catalogueStatus = useAppSelector((state) => state.catalogue.status)
 
   const [errors, setErrors] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -34,11 +41,17 @@ const createProductPage = ({ preCatalogueId }: Props) => {
   }, [])
 
   useEffect(() => {
-    if (status === ThunkStatus.Success) {
-      router.push('/manage-product')
-      dispatch(clearData())
+    if (catalogueStatus === ThunkStatus.Success) {
+      dispatch(clearCatalogueFlag())
     }
-  }, [status])
+  }, [catalogueStatus, catalogues])
+
+  useEffect(() => {
+    if (productStatus === ThunkStatus.Success) {
+      dispatch(clearProductFlag())
+      router.push('/manage-product')
+    }
+  }, [productStatus, product])
 
   const onCreateButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -56,12 +69,12 @@ const createProductPage = ({ preCatalogueId }: Props) => {
 
     setErrors(tmp_errors)
 
-    if (errors.length > 0) {
+    if (tmp_errors.length > 0) {
       return
     }
 
     dispatch(
-      createAsync({
+      createProductAsync({
         name: name,
         description: description,
         catalogueId: catalogueId.toString(),
@@ -176,9 +189,11 @@ const createProductPage = ({ preCatalogueId }: Props) => {
           </label>
           {pictureUrls.map((pictureUrl) =>
             pictureUrl.url.length > 0 ? (
-              <img src={pictureUrl.url} alt="preview" />
+              <img key={pictureUrl.id} src={pictureUrl.url} alt="preview" />
             ) : (
-              <span className="self-center text-bold">. . .</span>
+              <span key={pictureUrl.id} className="self-center text-bold">
+                . . .
+              </span>
             )
           )}
         </div>

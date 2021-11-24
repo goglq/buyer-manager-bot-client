@@ -2,14 +2,14 @@ import router from 'next/dist/client/router'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
-  clearData,
-  createAsync,
-} from '../../features/catalogue/slices/addCatalogueSlice'
+  clearCatalogueFlag,
+  createCatalogueAsync,
+} from '../../features/catalogue/catalogueSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
 const createCataloguePage = () => {
   const dispatch = useAppDispatch()
-  const status = useAppSelector((state) => state.addCatalogue.status)
+  const status = useAppSelector((state) => state.catalogue.status)
 
   const [errors, setErrors] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -18,7 +18,7 @@ const createCataloguePage = () => {
   useEffect(() => {
     if (status === ThunkStatus.Success) {
       router.push('/manage-catalogue')
-      dispatch(clearData())
+      dispatch(clearCatalogueFlag())
     }
   }, [status])
 
@@ -39,7 +39,7 @@ const createCataloguePage = () => {
       return
     }
 
-    dispatch(createAsync({ name, url }))
+    dispatch(createCatalogueAsync({ name, url }))
   }
 
   return (

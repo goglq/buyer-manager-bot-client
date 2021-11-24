@@ -4,29 +4,46 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import LoadingComponent from '../../components/loading'
 import {
-  fetchOneAsync,
+  clearCatalogueFlag,
+  fetchCatalogueAsync,
+} from '../../features/catalogue/catalogueSlice'
+import {
+  clearProductFlag,
   fetchProductsAsync,
-} from '../../features/catalogue/slices/fetchCatalogueSlice'
+} from '../../features/product/productsSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
 const cataloguePage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const catalogue = useAppSelector((state) => state.catalogue.catalogue)
-  const products = useAppSelector((state) => state.catalogue.products)
+  const products = useAppSelector((state) => state.product.products)
   const { id } = router.query
-  const status = useAppSelector((state) => state.catalogue.status)
+  const catalogueStatus = useAppSelector((state) => state.catalogue.status)
+  const productStatus = useAppSelector((state) => state.product.status)
 
   useEffect(() => {
-    dispatch(fetchOneAsync(router.query.id as string))
+    dispatch(fetchCatalogueAsync(router.query.id as string))
     dispatch(fetchProductsAsync(router.query.id as string))
   }, [id])
+
+  useEffect(() => {
+    if (catalogueStatus === ThunkStatus.Success) {
+      dispatch(clearCatalogueFlag())
+    }
+  }, [catalogueStatus, catalogue])
+
+  useEffect(() => {
+    if (productStatus === ThunkStatus.Success) {
+      dispatch(clearProductFlag())
+    }
+  }, [productStatus, products])
 
   const onChangeClick = () => {}
 
   const onDeleteClick = () => {}
 
-  return status === ThunkStatus.Loading ? (
+  return catalogueStatus === ThunkStatus.Loading ? (
     <div className="flex justify-center items-center h-rel-screen">
       <LoadingComponent />
     </div>
@@ -58,7 +75,7 @@ const cataloguePage = () => {
         <div className="flex flex-col space-y-4">
           {products.length > 0 ? (
             products?.map((product) => (
-              <Link href={`/product/${product.id}`}>
+              <Link key={product.id} href={`/product/${product.id}`}>
                 <a className="px-3 py-2 rounded-md bg-pink-400 text-lg text-white font-medium">
                   {product.name}
                 </a>

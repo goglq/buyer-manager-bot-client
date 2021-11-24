@@ -4,36 +4,48 @@ import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import LoadingComponent from '../../components/loading'
 import {
-  clearData,
-  deleteAsync,
-} from '../../features/product/slices/deleteProductSlice'
-import { fetchOneAsync } from '../../features/product/slices/productsSlice'
+  clearProductFlag,
+  deleteProductAsync,
+} from '../../features/product/productsSlice'
+import { fetchProductAsync } from '../../features/product/productsSlice'
 import { ThunkStatus } from '../../features/ThunkStatus'
 
 const productPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const product = useAppSelector((state) => state.product.product)
-  const deleteStatus = useAppSelector((state) => state.deleteProduct.status)
 
   const { id } = router.query
 
+  const product = useAppSelector((state) => state.product.product)
+
   const status = useAppSelector((state) => state.product.status)
+  const deleteStatus = useAppSelector((state) => state.product.deleteStatus)
 
   useEffect(() => {
-    dispatch(fetchOneAsync(router.query.id as string))
-  }, [id])
+    dispatch(
+      fetchProductAsync({
+        id: router.query.id as string,
+        includePictures: true,
+      })
+    )
+  }, [])
+
+  useEffect(() => {
+    if (status === ThunkStatus.Success) {
+      dispatch(clearProductFlag())
+    }
+  }, [product, status])
 
   useEffect(() => {
     if (deleteStatus === ThunkStatus.Success) {
       router.back()
-      dispatch(clearData())
+      dispatch(clearProductFlag())
     }
-  }, [deleteStatus])
+  }, [product, deleteStatus])
 
   const onDeleteButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    dispatch(deleteAsync(id as string))
+    dispatch(deleteProductAsync(id as string))
   }
 
   return status === ThunkStatus.Loading ? (
@@ -80,34 +92,24 @@ const productPage = () => {
       <div className="col-span-2 bg-white rounded-lg p-5 space-y-10 overflow-y-scroll scroll">
         <h1 className="text-xl font-medium">Картинки</h1>
         <div className="flex flex-col space-y-4 ">
-          <img
-            className="rounded-md w-full"
-            src="https://ru.reactjs.org/logo-og.png"
-            alt=""
-          />
-          <img
-            className="rounded-md w-full"
-            src="https://ru.reactjs.org/logo-og.png"
-            alt=""
-          />
-          <img
-            className="rounded-md w-full"
-            src="https://ru.reactjs.org/logo-og.png"
-            alt=""
-          />
-          <img
-            className="rounded-md w-full"
-            src="https://ru.reactjs.org/logo-og.png"
-            alt=""
-          />
+          {product?.pictureLinks.map((link) => (
+            <img
+              key={link.id}
+              className="rounded-md w-full"
+              src={link.url}
+              alt=""
+            />
+          ))}
         </div>
       </div>
       <div className="col-span-2 bg-white rounded-lg p-5 space-y-10">
         <h1 className="text-xl font-medium">Управление товаром</h1>
         <div className="flex flex-col space-y-5">
-          <button className="px-5 py-2 rounded-md bg-blue-400 text-white font-bold">
-            Изменить
-          </button>
+          <Link href={`/product/edit/${id}`}>
+            <a className="flex justify-center items-center px-5 py-2 rounded-md bg-blue-400 text-white font-bold">
+              Изменить
+            </a>
+          </Link>
           <button
             className="px-5 py-2 rounded-md bg-red-500 text-white font-bold"
             onClick={onDeleteButtonClick}

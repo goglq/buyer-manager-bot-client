@@ -5,7 +5,6 @@ import { ProductDto } from '../product/productDtos'
 export async function fetchCatalogues(): Promise<CatalogueDto[]> {
   try {
     const response = await http.get('/catalogue')
-    console.log('base url: ', http.defaults.baseURL)
     return response.data
   } catch (error) {
     console.log(error)

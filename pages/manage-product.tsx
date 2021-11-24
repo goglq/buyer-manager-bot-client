@@ -2,15 +2,26 @@ import { NextPage } from 'next'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import { fetchAsync } from '../features/product/slices/productsSlice'
+import {
+  clearProductFlag,
+  fetchProductsAsync,
+} from '../features/product/productsSlice'
+import { ThunkStatus } from '../features/ThunkStatus'
 
 const manageCataloguePage: NextPage = () => {
   const dispatch = useAppDispatch()
-  const products = useAppSelector((state) => state.products.products)
+  const products = useAppSelector((state) => state.product.products)
+  const status = useAppSelector((state) => state.product.status)
 
   useEffect(() => {
-    dispatch(fetchAsync())
+    dispatch(fetchProductsAsync())
   }, [])
+
+  useEffect(() => {
+    if (status === ThunkStatus.Success) {
+      dispatch(clearProductFlag())
+    }
+  }, [status, products])
 
   return (
     <div className="grid grid-cols-4 gap-4 p-5 h-rel-screen">
