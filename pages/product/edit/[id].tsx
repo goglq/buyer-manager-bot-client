@@ -1,6 +1,7 @@
 import { useRouter } from 'next/dist/client/router'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import LoadingComponent from '../../../components/loading'
 import {
   clearCatalogueFlag,
   fetchCataloguesAsync,
@@ -125,7 +126,11 @@ const EditProductPage = (props: Props) => {
     )
   }
 
-  return (
+  return productStatus === ThunkStatus.Loading ? (
+    <div className="flex justify-center items-center h-rel-screen">
+      <LoadingComponent />
+    </div>
+  ) : (
     <form className="grid grid-cols-6 grid-rows-6 gap-5 w-full h-rel-screen px-10 py-5">
       <div className="col-span-2 row-span-5 rounded-lg bg-white p-10 space-y-5">
         {errors.length > 0 && (
