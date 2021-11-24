@@ -31,7 +31,7 @@ const ManageCataloguePage: NextPage = () => {
           {products.map((product) => (
             <li key={product.id} className="flex">
               <Link href={`/product/${product.id}`}>
-                <a className="w-full py-2 rounded-md bg-pink-100 text-lg font-medium px-5">
+                <a className="w-full py-2 rounded-md bg-pink-100 text-lg font-medium px-5 hover:bg-pink-200 transition-colors duration-200 ease-in-out">
                   {product.name}
                 </a>
               </Link>

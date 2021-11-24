@@ -77,7 +77,7 @@ const CataloguePage = () => {
           {products.length > 0 ? (
             products?.map((product) => (
               <Link key={product.id} href={`/product/${product.id}`}>
-                <a className="px-3 py-2 rounded-md bg-pink-400 text-lg text-white font-medium">
+                <a className="px-3 py-2 rounded-md bg-pink-400 text-lg text-white font-medium hover:bg-pink-500 transition-colors duration-200 ease-in-out">
                   {product.name}
                 </a>
               </Link>
