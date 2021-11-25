@@ -1,3 +1,4 @@
+import { randomInt } from 'crypto'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import React, { useEffect, useState } from 'react'
@@ -31,10 +32,10 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
   const [description, setDescription] = useState('')
   const [catalogueId, setCatalogueId] = useState<number>(preCatalogueId)
 
-  const [pictureInputCount, setPictureInputCount] = useState(1)
-  const [pictureUrls, setPictureUrls] = useState<{ id: number; url: string }[]>(
-    []
-  )
+  const [pictureInputKey, setPictureInputKey] = useState(0)
+  const [pictureUrls, setPictureUrls] = useState<
+    { id: number; url: string; isCommited: boolean }[]
+  >([])
 
   useEffect(() => {
     dispatch(fetchCataloguesAsync())
@@ -55,8 +56,19 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
 
   const onCreateButtonClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setErrors([])
+    //setErrors([])
     const tmpErrors = []
+
+    setPictureUrls([
+      ...pictureUrls.filter((pictureUrl) => pictureUrl.url.length > 0),
+    ])
+
+    console.log(
+      pictureUrls
+        .filter((pictureUrl) => pictureUrl.url.length > 0)
+        .map((pictureUrl) => pictureUrl.url)
+    )
+
     if (name.length <= 0) {
       tmpErrors.push('Название товара не указано!')
     }
@@ -67,9 +79,9 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
       tmpErrors.push('Выберите каталог, где будет размещен товар!')
     }
 
+    let i = 0
     setErrors(
       tmpErrors.map((tmpError) => {
-        let i = 0
         return {
           id: i++,
           error: tmpError,
@@ -87,7 +99,7 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
         description: description,
         catalogueId: catalogueId.toString(),
         photoUrls: pictureUrls
-          .slice(0, pictureUrls.length - 1)
+          .filter((pictureUrl) => pictureUrl.url.length > 0)
           .map((pictureUrl) => pictureUrl.url),
       })
     )
@@ -95,13 +107,39 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
 
   const onAddClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setPictureInputCount(pictureInputCount + 1)
-    pictureUrls.push({ id: pictureUrls.length + 1, url: '' })
+    pictureUrls.push({ id: pictureInputKey, url: '', isCommited: false })
+    setPictureInputKey(pictureInputKey + 1)
+    setPictureUrls([...pictureUrls])
+
+    console.log(pictureUrls)
   }
 
-  const onUrlInputChange = (id: number, value: string) => {
-    pictureUrls[id - 1].url = value
-    setPictureUrls(pictureUrls)
+  const onEnterPress = (
+    id: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    const pictureUrl = pictureUrls.find((pictureUrl) => pictureUrl.id === id)
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      pictureUrl!.url = e.currentTarget.value
+      pictureUrl!.isCommited = pictureUrl!.url.length > 0
+      setPictureUrls([...pictureUrls])
+      console.log('onEnter', pictureUrls)
+    } else {
+      pictureUrl!.isCommited = false
+      setPictureUrls([...pictureUrls])
+    }
+  }
+
+  const onDeletePress = (
+    id: number,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault()
+    setPictureUrls([
+      ...pictureUrls.filter((pictureUrl) => pictureUrl.id !== id),
+    ])
+    console.log('on delete', pictureUrls)
   }
 
   return (
@@ -119,7 +157,7 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
                     key={error.id}
                     className="px-3 py-2 rounded-md bg-red-500 text-white font-medium mb-1 mr-1"
                   >
-                    {error}
+                    {error.error}
                   </div>
                 ))}
               </div>
@@ -173,19 +211,24 @@ const CreateProductPage = ({ preCatalogueId }: Props) => {
             <span className="text-gray-200">минимум 1 картинка</span>
           </label>
           {pictureUrls.map((pictureUrl) => (
-            <input
-              key={pictureUrl.id}
-              className={
-                pictureUrl.url.length > 0
-                  ? 'px-3 py-2 border-2 rounded border-green-400 outline-none'
-                  : 'px-3 py-2 border-2 rounded border-grey-200 outline-none'
-              }
-              type="text"
-              placeholder="http://example.picture.resource/album/2/picture/5"
-              onChange={(e) =>
-                onUrlInputChange(pictureUrl.id, e.currentTarget.value)
-              }
-            />
+            <div key={pictureUrl.id} className="flex w-full">
+              <input
+                className={
+                  pictureUrl.isCommited
+                    ? 'flex-grow px-3 py-2 border-2 rounded-md rounded-tr-none rounded-br-none bg-green-100 border-green-200 outline-none'
+                    : 'flex-grow px-3 py-2 border-2 rounded-md rounded-tr-none rounded-br-none border-grey-200 outline-none'
+                }
+                type="text"
+                placeholder="http://example.picture.resource/album/2/picture/5"
+                onKeyPress={(e) => onEnterPress(pictureUrl.id, e)}
+              />
+              <button
+                className="flex-none bg-red-400 rounded-md rounded-tl-none rounded-bl-none px-2 text-white font-medium transition-colors hover:bg-red-500"
+                onClick={(e) => onDeletePress(pictureUrl.id, e)}
+              >
+                Отменить
+              </button>
+            </div>
           ))}
           <button
             className="rounded-md bg-blue-400 py-2 text-white font-medium hover:bg-blue-500 transition-colors duration-200 ease-in-out"
